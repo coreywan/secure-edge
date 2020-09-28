@@ -1,0 +1,39 @@
+###############################################################
+## Manual Step That needs to looked at for Automation        ##
+## This may be part of bringing in RackN                     ##
+###############################################################
+
+- name: Patch and Configure BIOS
+  pause:
+    prompt: "Follow the BIOS Firmware Update Process and the BIOS Configurations (pg 14-18)"
+
+- name: Get Output of dmesg for secureboot validation
+  shell: |
+    dmesg | grep secure
+  register: dmesg_secure_raw
+
+- name: Assert that secureboot is enabled
+  assert:
+    that: |
+      'Secure boot enabled' is in dmesg_secure_raw.stdout
+    fail_msg: |
+      Secure Boot does NOT appear to be enabled.
+      Raw Output:
+      {{dmesg_secure_raw.stdout}}
+    success_msg: Secure Boot appears to be enabled
+
+- name: Get Output of dmesg for lockdown validation
+  shell: |
+    dmesg | grep Lockdown
+  register: dmesg_lockdown_raw
+
+- name: Assert that Lockdown is enabled
+  assert:
+    that:
+      - "'hibernation is restricted' is in dmesg_lockdown_raw.stdout"
+      - "'mem,kmem,port is restricted' is in dmesg_lockdown_raw.stdout"
+    fail_msg: |
+      Secure Boot does NOT appear to be enabled.
+      Raw Output:
+      {{dmesg_lockdown_raw.stdout}}
+    success_msg: Secure Boot appears to be enabled

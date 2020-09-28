@@ -1,0 +1,34 @@
+---
+- name: Get output of tpm class output
+  shell: |
+    cat /sys/class/tpm/tpm[0-9]/device/description
+  register: class_output_raw
+  changed_when: false
+
+- name: Assert that TPM Drivers are loaded
+  assert:
+    that: |
+      'TPM 2.0 Device' is in class_output_raw.stdout
+    fail_msg: |
+      Unable to detect TPM drivers
+    success_msg: TPM Drivers appear to be installed
+
+- name: Check to see if tpm0 exists
+  stat:
+    path: /dev/tpm0
+  register: tpm0_dev_stat
+
+- name: Assert that the tpm0 device exists
+  assert:
+    that: tpm0_dev_stat.stat.exists
+    fail_msg: "Utilize the dmesg | grep tpm command to troubleshoot why the tpm0 doesn't exist"
+
+- name: Check to see if tpmrm0 exists
+  stat:
+    path: /dev/tpmrm0
+  register: tpmrm0_dev_stat
+
+- name: Assert that the tpmrm0 device exists
+  assert:
+    that: tpmrm0_dev_stat.stat.exists
+    fail_msg: "Utilize the dmesg | grep tpm command to troubleshoot why the tpmrm0 doesn't exist"

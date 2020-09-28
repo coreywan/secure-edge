@@ -1,0 +1,12 @@
+---
+patch_auto_reboot: true
+patch_server: true
+
+tpm_simulator_package: "ibmtpm1332.tar.gz"
+tpm_simulator_install: true
+
+tpm_tss_version: 2.3.1
+tpm_abrmd_version: 2.3.1
+
+tpm_enable_hardware_checks: true
+tpm_enable_secure_boot_checks: true

@@ -1,0 +1,8 @@
+#- include_tasks: prereqs.yml
+
+- name: Setup Secure Boot
+  when: tpm_enable_secure_boot_checks
+  include_tasks: secure_boot.yml
+
+- name: TPM2 Setup
+  include_tasks: tpm_setup.yml

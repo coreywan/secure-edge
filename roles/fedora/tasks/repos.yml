@@ -1,0 +1,21 @@
+- name: Apply Templates for Repositories
+  template:
+    src: "{{ item.src }}"
+    dest: "/etc/yum.repos.d/{{ item.dest }}"
+    mode: "0644"
+  loop:
+    - src: fedora-modular.repo.j2
+      dest: fedora-modular.repo
+    - src: fedora.repo.j2
+      dest: fedora.repo
+    - src: fedora-updates-modular.repo.j2
+      dest: fedora-updates-modular.repo
+    - src: fedora-updates-testing-modular.repo.j2
+      dest: fedora-updates-testing-modular.repo
+    - src: fedora-updates-testing.repo.j2
+      dest: fedora-updates-testing.repo
+    - src: fedora-updates.repo.j2
+      dest: fedora-updates.repo
+
+- name: yum Clean
+  shell: yum clean all
