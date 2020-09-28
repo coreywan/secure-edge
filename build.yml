@@ -2,5 +2,5 @@
   gather_facts: false
   become: true
   roles:
-    #- fedora
+    - fedora
     - tpm

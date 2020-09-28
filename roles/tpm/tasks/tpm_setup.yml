@@ -1,5 +1,4 @@
 ---
-- debug: var=tpm_enable_hardware_checks
 - name: Run through Hardware Checks
   when: tpm_enable_hardware_checks
   include_tasks: tpm_hardware_check.yml
