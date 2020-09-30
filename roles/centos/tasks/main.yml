@@ -1,6 +1,4 @@
-- name: Setup Repositories
-  include_tasks: repos.yml
-
+---
 - name: Install yum utils and wget
   yum:
     state: present
@@ -15,9 +13,7 @@
   debug:
     msg: "Kernel Version is {{ ansible_kernel }}"
 
-
 - name: Patch Server Tasks
   when:
-    - ansible_kernel is not version_compare('5.18', '<')
     - patch_server
   include_tasks: patch.yml
