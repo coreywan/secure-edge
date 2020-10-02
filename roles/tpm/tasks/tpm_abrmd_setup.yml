@@ -1,5 +1,5 @@
 ---
-- name: Install tpm2-abrmd dependencies
+- name: abrmd - Install tpm2-abrmd dependencies
   yum:
     name:
       - autoconf
@@ -11,30 +11,30 @@
       - gcc
       - glib2-devel
 
-- name: Setup TSS User
+- name: abrmd - Setup TSS User
   user:
     name: tss
     system: true
 
-- name: Create Directory for tpm2-abrmd
+- name: abrmd - Create Directory for tpm2-abrmd
   file:
     state: directory
     path: "/tmp/tpm2-abrmd"
 
-- name: Download Git Repo
+- name: abrmd - Download Git Repo
   git:
     repo: https://github.com/tpm2-software/tpm2-abrmd.git
     version: "{{ tpm_abrmd_version }}"
     dest: "/tmp/tpm2-abrmd"
 
-- name: Execute tss bootstrap script
+- name: abrmd - Execute tss bootstrap script
   shell: |
     ./bootstrap
   args:
     chdir: /tmp/tpm2-abrmd
     creates: /tmp/tpm2-abrmd/configure
 
-- name: Execute abrmd configure script
+- name: abrmd - Execute abrmd configure script
   shell: |
     ./configure --with-systemdsystemunitdir=/etc/systemd/system
   args:
@@ -43,29 +43,29 @@
   environment:
     PKG_CONFIG_PATH: /usr/local/lib/pkgconfig
 
-- name: Compile Code using Make
+- name: abrmd - Compile Code using Make
   shell: |
     make
   args:
     chdir: /tmp/tpm2-abrmd
     creates: /tmp/tpm2-abrmd/src/tpm2-abrmd
 
-- name: Install tpm-abrmd
+- name: abrmd - Install tpm-abrmd
   shell: |
     make install
   args:
     chdir: /tmp/tpm2-abrmd
     creates: /usr/local/sbin/tpm2-abrmd
 
-- name: Update Run-Time bindings
+- name: abrmd - Update Run-Time bindings
   shell: |
     ldconfig
 
-- name: Reload systemd daemons
+- name: abrmd - Reload systemd daemons
   shell: |
     systemctl daemon-reload
 
-- name: Enable tpm2-abrmd service
+- name: abrmd - Enable tpm2-abrmd service
   service:
     name: tpm2-abrmd
     state: started

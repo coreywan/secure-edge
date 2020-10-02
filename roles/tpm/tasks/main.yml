@@ -1,8 +1,40 @@
+- name: Gather Facts
+  setup:
+
+- name: Output Versions
+  debug:
+    msg:
+      - "tpm_tss_version: {{tpm_tss_version}}"
+      - "tpm_abrmd_version: {{tpm_abrmd_version}}"
+      - "tpm_tools_version: {{tpm_tools_version}}"
+      - "tpm_simulator_package: {{tpm_simulator_package}}"
+
 - include_tasks: prereqs.yml
 
-- name: Setup Secure Boot
-  when: tpm_enable_secure_boot_checks
-  include_tasks: secure_boot.yml
+# - name: Setup Secure Boot
+#   when: tpm_enable_secure_boot_checks
+#   include_tasks: secure_boot.yml
 
-- name: TPM2 Setup
-  include_tasks: tpm_setup.yml
+# - name: Run through Hardware Checks
+#   when: tpm_enable_hardware_checks
+#   include_tasks: tpm_hardware_check.yml
+
+- name: Call tasks to setup the TPM Simulator
+  when: tpm_simulator_install
+  include_tasks: tpm_setup_simulator.yml
+
+# - name: Call tasks to install and configure tpm2-tss
+#   include_tasks: tpm_tss_setup.yml
+
+# - name: Call tasks to install and configure tpm2-abrmd
+#   include_tasks: tpm_abrmd_setup.yml
+
+# - name: Call tasks to install and configure tpm2-tools
+#   include_tasks: tpm_tools_setup.yml
+
+- name: Install tpm required packages
+  yum:
+    name:
+      - tpm2-tools
+      - tpm2-abrmd
+      - tpm2-tss

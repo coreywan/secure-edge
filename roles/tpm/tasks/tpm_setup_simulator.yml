@@ -1,5 +1,5 @@
 ---
-- name: Install openssl-devel, make and gcc
+- name: simulator - Install openssl-devel, make and gcc
   yum:
     name:
       - openssl-devel
@@ -7,31 +7,31 @@
       - gcc
     state: present
 
-- name: Download TPM Simulator
+- name: simulator - Download TPM Simulator
   shell: |
     wget https://sourceforge.net/projects/ibmswtpm2/files/{{ tpm_simulator_package }}/download -O /tmp/{{ tpm_simulator_package }}
   args:
     creates: "/tmp/{{ tpm_simulator_package }}"
 
-- name: Ensure opt directory for tpm2-simulator
+- name: simulator - Ensure opt directory for tpm2-simulator
   file:
     state: directory
     path: "/opt/tpm2-simulator"
 
-- name: Unarchive content
+- name: simulator - Unarchive content
   unarchive:
     src: "/tmp/{{ tpm_simulator_package }}"
     dest: "/opt/tpm2-simulator"
     remote_src: true
 
-- name: Make from source
+- name: simulator - Make from source
   shell: |
     make
   args:
     creates: "/opt/tpm2-simulator/src/tpm_server"
     chdir: "/opt/tpm2-simulator/src"
 
-- name: Move tpm_server
+- name: simulator - Move tpm_server
   file:
     src: /opt/tpm2-simulator/src/tpm_server
     path: /usr/local/bin/tpm_server

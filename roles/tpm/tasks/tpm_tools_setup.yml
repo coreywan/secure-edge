@@ -1,5 +1,5 @@
 ---
-- name: Install tpm2-tools dependencies
+- name: tools - Install tpm2-tools dependencies
   yum:
     name:
       - automake
@@ -17,25 +17,25 @@
       - PyYAML
       - pandoc
 
-- name: Create Directory for tpm2-tools
+- name: tools - Create Directory for tpm2-tools
   file:
     state: directory
     path: "/tmp/tpm2-tools"
 
-- name: Download Git Repo
+- name: tools - Download Git Repo
   git:
     repo: https://github.com/tpm2-software/tpm2-tools.git
     version: "{{ tpm_tools_version }}"
     dest: "/tmp/tpm2-tools"
 
-- name: Execute tss bootstrap script
+- name: tools - Execute tss bootstrap script
   shell: |
     ./bootstrap
   args:
     chdir: /tmp/tpm2-tools
     creates: /tmp/tpm2-tools/configure
 
-- name: Execute tss configure script
+- name: tools - Execute tss configure script
   shell: |
     ./configure
   args:
@@ -44,7 +44,7 @@
   environment:
     PKG_CONFIG_PATH: /usr/local/lib/pkgconfig
 
-- name: Compile Code using Make
+- name: tools - Compile Code using Make
   shell: |
     make
   args:
@@ -53,7 +53,7 @@
   environment:
     GITIGNOREFILES:  # https://github.com/tpm2-software/tpm2-tss/issues/1636
 
-- name: Install tpm-tss
+- name: tools - Install tpm-tss
   shell: |
     make install
   args:

@@ -1,5 +1,5 @@
 ---
-- name: Install tpm2-tss dependencies
+- name: tss - Install tpm2-tss dependencies
   yum:
     name:
       - tpm2-tss
@@ -11,37 +11,36 @@
       - autoconf-archive
       - doxygen
 
-- name: Install Dependencies
+- name: tss - Install Dependencies
   shell: |
     dnf builddep -y tpm2-tss
-  
 
-- name: Create Directory for tpm2-tss
+- name: tss - Create Directory for tpm2-tss
   file:
     state: directory
     path: "/tmp/tpm2-tss"
 
-- name: Download Git Repo
+- name: tss - Download Git Repo
   git:
     repo: https://github.com/tpm2-software/tpm2-tss.git
     version: "{{ tpm_tss_version }}"
     dest: "/tmp/tpm2-tss"
 
-- name: Execute tss bootstrap script
+- name: tss - Execute tss bootstrap script
   shell: |
     ./bootstrap
   args:
     chdir: /tmp/tpm2-tss
     creates: /tmp/tpm2-tss/configure
 
-- name: Execute tss configure script
+- name: tss - Execute tss configure script
   shell: |
     ./configure --with-udevrulesdir=/etc/udev/rules.d
   args:
     chdir: /tmp/tpm2-tss
     #creates: /tmp/tpm2-tss/Makefile
 
-- name: Compile Code using Make
+- name: tss - Compile Code using Make
   shell: |
     make -j$(nproc)
   args:
@@ -50,17 +49,17 @@
   environment:
     GITIGNOREFILES:  # https://github.com/tpm2-software/tpm2-tss/issues/1636
 
-- name: Install tpm-tss
+- name: tss - Install tpm-tss
   shell: |
     make install
   args:
     chdir: /tmp/tpm2-tss
     creates: /usr/local/include/tss2/tss2_common.h
 
-- name: Reload Udev Rules
+- name: tss - Reload Udev Rules
   shell: |
     udevadm control --reload-rules && udevadm trigger
 
-- name: Update Run-Time bindings
+- name: tss - Update Run-Time bindings
   shell: |
     ldconfig
