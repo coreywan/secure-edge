@@ -1,0 +1,19 @@
+---
+Name: "secure-edge"
+Description: "Basic CentOS Install Workflow + Runner"
+Documentation: |
+  This workflow includes the DRP Runner in CentOS provisioning process for DRP.
+  After the install completes, the workflow installs the runner
+  in a waiting state so that DRP will automatically detect and start a
+  new workflow if the *Machine.Workflow* is updated.
+  .. note:: To enable, upload the CentOS ISO as per the centos-8 BootEnv
+Stages:
+  - centos-8-install
+  - drp-agent
+  - finish-install
+  - ansible-playbooks-local-fix
+  - complete
+Meta:
+  color: green
+  icon: download
+  title: RackN Content
