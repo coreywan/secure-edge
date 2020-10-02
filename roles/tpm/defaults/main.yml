@@ -4,10 +4,10 @@ patch_server: true
 
 tpm_simulator_install: true
 
-tpm_tss_version: "{{ tpm_tool_version_table[ansible_distribution | lower()][ansible_distribution_version]['tpm_tss_version'] }}"
-tpm_abrmd_version: "{{ tpm_tool_version_table[ansible_distribution | lower()][ansible_distribution_version]['tpm_abrmd_version'] }}"
-tpm_tools_version: "{{ tpm_tool_version_table[ansible_distribution | lower()][ansible_distribution_version]['tpm_tools_version'] }}"
-tpm_simulator_package: "{{ tpm_tool_version_table[ansible_distribution | lower()][ansible_distribution_version]['tpm_simulator_package'] }}"
+tpm_tss_version: "{{ tpm_tool_version_table[ansible_distribution | lower()][ansible_distribution_major_version]['tpm_tss_version'] }}"
+tpm_abrmd_version: "{{ tpm_tool_version_table[ansible_distribution | lower()][ansible_distribution_major_version]['tpm_abrmd_version'] }}"
+tpm_tools_version: "{{ tpm_tool_version_table[ansible_distribution | lower()][ansible_distribution_major_version]['tpm_tools_version'] }}"
+tpm_simulator_package: "{{ tpm_tool_version_table[ansible_distribution | lower()][ansible_distribution_major_version]['tpm_simulator_package'] }}"
 
 tpm_enable_hardware_checks: true
 tpm_enable_secure_boot_checks: true
