@@ -1,0 +1,6 @@
+---
+- name: Install cryptsetup
+  yum:
+    name: cryptsetup
+    state: installed
+

@@ -1,6 +1,0 @@
-- hosts: fitlet
-  gather_facts: false
-  become: true
-  roles:
-    - fedora
-    - tpm

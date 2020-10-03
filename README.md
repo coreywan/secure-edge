@@ -49,7 +49,7 @@ drpcli subnets create - < /tmp/local_subnet.json
 drpcli users password rocketskates '{{ REPLACE PASSWORD }}'
 ```
 
-#. Setup custom Workflow with Ansible Run Built in
+#. Setup custom Workflow with Ansible
 
 ```sh
 drpcli contents bundle ../secure-edge.yaml

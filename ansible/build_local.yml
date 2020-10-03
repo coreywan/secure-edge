@@ -1,6 +1,8 @@
 - hosts: localhost
   gather_facts: false
   become: true
+  vars:
+    patching_auto_reboot: false
   roles:
     - centos
     - tpm
