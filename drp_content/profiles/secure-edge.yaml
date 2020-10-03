@@ -1,0 +1,15 @@
+---
+ReadOnly: false
+Meta: {}
+Partial: false
+Name: secure-edge
+Description: 'Profile to be used with Secure Edge Devices'
+Documentation: ''
+Params:
+  access-ssh-root-mode: without-password
+  ansible/playbooks:
+    - name: secure-edge-build
+      playbook: build_local.yml
+      repo: 'https://github.com/coreywan/secure-edge'
+      verbosity: true
+      path: ansible
