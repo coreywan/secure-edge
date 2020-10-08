@@ -52,6 +52,8 @@ drpcli users password rocketskates '{{ REPLACE PASSWORD }}'
 #. Setup custom Workflow with Ansible
 
 ```sh
+git clone https://github.com/coreywan/secure-edge.git
+cd secure-edge/drp_content/
 drpcli contents bundle ../secure-edge.yaml
 drpcli contents create ../secure-edge.yaml
 ```
@@ -60,12 +62,13 @@ drpcli contents create ../secure-edge.yaml
 
 ```sh
 ssh-keygen -q  -t rsa -N '' -f /root/.ssh/id_rsa
-drpcli profiles create secure-edge
-drpcli profiles set secure-edge param access-keys to "{ \"drp-local\": \"$(cat ~/.ssh/id_rsa.pub)\" }"
-drpcli profiles set secure-edge param access-ssh-root-mode to 'without-password'
-drpcli profiles set secure-edge param ansible/playbooks to "[{ \"playbook\": \"build_local.yml\", \"name\": \"secure-edge-build\", \"repo\": \"https://github.com/coreywan/secure-edge\", \"verbosity\" : true, \"path\": \"\" }]"
+drpcli profiles create wwt-root
+drpcli profiles set wwt-root param access-keys to "{ \"drp-local\": \"$(cat ~/.ssh/id_rsa.pub)\" }"
+drpcli profiles set wwt-root param access-ssh-root-mode to 'without-password'
 ``` 
 
+#. Update Profile on the finlet server(s) to include `secure-edge` and `wwt-root`
+#. Set the workflow to be `secure-edge`
 
 ## Notes around the Intel Recipe
 
