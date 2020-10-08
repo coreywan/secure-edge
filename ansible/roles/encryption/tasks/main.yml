@@ -4,7 +4,9 @@
     name: cryptsetup
     state: installed
 
-- name: Install clevis
+- name: Install clevis and clevis-luks
   yum:
-    name: clevis
+    name:
+      - clevis
+      - clevis-luks
     state: installed
