@@ -3,3 +3,8 @@
   yum:
     name: cryptsetup
     state: installed
+
+- name: Install clevis
+  yum:
+    name: clevis
+    state: installed
