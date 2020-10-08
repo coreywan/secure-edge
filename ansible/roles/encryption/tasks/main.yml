@@ -3,4 +3,3 @@
   yum:
     name: cryptsetup
     state: installed
-
