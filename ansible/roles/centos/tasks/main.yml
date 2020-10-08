@@ -17,3 +17,8 @@
   when:
     - patch_server
   include_tasks: patch.yml
+
+- name: Enable SELinux
+  ansible.posix.selinux:
+    policy: targeted
+    state: enforcing
