@@ -77,4 +77,12 @@ drpcli profiles set wwt-root param access-ssh-root-mode to 'without-password'
 * Secure Boot with custom Linux Kernels (pg 18)
   * We are not leveraging custom linux kernels. Skipping this section
   * We pick back up automation/verification at `Verify that Secure Boot is enabled`
-* 
+* Skipping OpenVPN tasks for now (pg 49)
+* Circle back on IMA Appraisal setup
+* Circle back to Data Encryption and Data Sanitization
+  * Need to get USB Thumb Drive Installed
+  * Setup Encrypted disk based on instructions (build it into the playbook to look for /dev/sdb)
+  * Setup DRP Script, Tasks, Stages, and Workflow to perform tpm clear out and data wipe for secure data removal (erase-hard-disk-set potentially)
+* Docker
+  * Current Docker CE is installed via Ansible
+  * No Docker Trusted Registry  
