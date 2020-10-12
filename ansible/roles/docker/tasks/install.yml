@@ -1,0 +1,20 @@
+---
+- name: Setup Yum Repo
+  get_url:
+    url: https://download.docker.com/linux/centos/docker-ce.repo
+    dest: /etc/yum.repos.d/docker-ce.repo
+
+
+- name: Install Docker CE
+  yum:
+    state: installed
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+
+- name: Start Docker
+  service:
+    name: docker
+    state: started
+    enabled: true

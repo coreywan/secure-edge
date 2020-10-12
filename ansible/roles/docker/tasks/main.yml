@@ -1,0 +1,10 @@
+---
+- name: setup security 
+  include_tasks: security.yml
+
+- name: Install Docker
+  include_tasks: install.yml
+
+- name: Docker Benchmark Security Tests
+  when: docker_benchmark_tests
+  include_tasks: docker_benchmark_tests.yml

@@ -1,0 +1,10 @@
+---
+- name: Enable Auditing
+  template:
+    src: docker-audit.rules.j2
+    dest: /etc/audit/rules.d/docker-audit.rules
+  register: docker_audit
+
+- name: Restart auditd 
+  when: docker_audit.changed
+  shell: /usr/sbin/service auditd reload

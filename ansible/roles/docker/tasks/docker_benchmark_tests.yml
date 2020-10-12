@@ -1,0 +1,5 @@
+---
+- name: Clone Repo
+  git:
+    repo: https://github.com/docker/docker-bench-security.git
+    dest: /tmp/docker-bench-security
