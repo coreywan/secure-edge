@@ -1,2 +1,5 @@
 ---
 patch_server: true
+patch_auto_reboot: false
+selinux_auto_reboot: false
+iversion_auto_reboot: false

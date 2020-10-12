@@ -1,0 +1,4 @@
+---
+- name: setenforce
+  when: selinux_auto_reboot | bool
+  reboot: 
