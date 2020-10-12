@@ -1,0 +1,21 @@
+---
+- name: Set SELINUX to enforcing
+  lineinfile:
+    path: /etc/selinux/config
+    regexp: '^SELINUX='
+    line: 'SELINUX=enforcing'
+  notify: setenforce 
+
+- name: Set SELINUXTYPE to targeted
+  lineinfile:
+    path: /etc/selinux/config
+    regexp: '^SELINUXTYPE='
+    line: 'SELINUXTYPE=targeted'
+
+- name: Install Support Tools
+  yum:
+    name: 
+      - policycoreutils-devel
+      - setools-console
+      - rpm-build
+    state: installed
