@@ -1,0 +1,42 @@
+---
+- name: Slurp grub file
+  fetch:
+    src:  /etc/default/grub
+    dest: "{{ playbook_dir }}/tmp_grub"
+    flat: true
+  changed_when: false
+
+- name: set GRUB_CMDLINE_LINUX fact
+  set_fact: 
+    grub_cmdline_linux: "{{ lookup('ini', query) }}"
+  vars:
+    query: "GRUB_CMDLINE_LINUX type=properties file={{ playbook_dir }}/tmp_grub"
+
+- name: Add i_version
+  when: "'iversion' not in grub_cmdline_linux"
+  block:
+    - name: Set new Fact
+      set_fact:
+        grub_cmdline_linux_new: "{{ grub_cmdline_linux | regex_replace('^\"|\"$', '') }} rootflags=iversion"
+
+    - name: Replace Line
+      lineinfile:
+        path:  /etc/default/grub
+        regex: '^GRUB_CMDLINE_LINUX='
+        line: 'GRUB_CMDLINE_LINUX="{{ grub_cmdline_linux_new }}"'
+        backup: true
+
+    - name: Rebuild grub2
+      shell: |
+        grub2-mkconfig -o /boot/efi/EFI/centos/grub.cfg
+
+    - name: Reboot from grub updates
+      when: iversion_auto_reboot
+      reboot:
+
+- name: Cleanup local grub file
+  file: 
+    path: "{{ playbook_dir }}/tmp_grub"
+    state: absent
+
+- meta: end_play

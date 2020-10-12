@@ -19,6 +19,7 @@
   include_tasks: patch.yml
 
 - name: Enable SELinux
-  ansible.posix.selinux:
-    policy: targeted
-    state: enforcing
+  include_tasks: selinux.yml
+
+- name: Setup i_version option
+  include_tasks: i_version.yml
