@@ -1,0 +1,7 @@
+---
+- name: install openvpn
+  yum:
+    name: openvpn
+    state: installed
+
+## More configurations here whenever/if VPN comes into scope
