@@ -38,5 +38,3 @@
   file: 
     path: "{{ playbook_dir }}/tmp_grub"
     state: absent
-
-- meta: end_play
