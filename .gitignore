@@ -1,3 +1,4 @@
 .vscode
 ansible.cfg
 tmp_grub
+secure-edge.yaml
