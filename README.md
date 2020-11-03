@@ -28,7 +28,7 @@ systemctl restart dr-provision
 drpcli bootenvs uploadiso sledgehammer
 drpcli prefs set defaultWorkflow discover-base unknownBootEnv discovery
 drpcli contents upload catalog:task-library-stable
-drpcli bootenvs uploadiso fedora-31-install
+drpcli bootenvs uploadiso centos-8-install
 
 echo '{
   "Name": "local_subnet",
