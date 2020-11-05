@@ -10,12 +10,15 @@ Meta:
   icon: "linux"
   color: "blue"
   title: "WWT Secure Edge"
+Loaders:
+  amd64-uefi: EFI/BOOT/BOOTX64.EFI
+  arm64-uefi: EFI/BOOT/grubaa64.efi
 OS:
   Family: "fedora"
   Name: "fedora-32-iot"
   SupportedArchitectures:
     x86_64:
-      IsoFile: "Fedora-Server-dvd-x86_64-31-1.9.iso"
+      IsoFile: "Fedora-IoT-IoT-ostree-x86_64-32-20200925.0.iso"
       IsoUrl: "https://dl.fedoraproject.org/pub/alt/iot/32/IoT/x86_64/iso/Fedora-IoT-IoT-ostree-x86_64-32-20200925.0.iso"
       Sha256: "4d89c4128d2c4fb94f3716d1818b02ed50c86acbeb9c4c69e2201d674db2ff67"
       Kernel: "images/pxeboot/vmlinuz"
@@ -65,6 +68,6 @@ Templates:
   - Name: grub-secure
     Path: '{{.Env.PathFor "tftp" ""}}/EFI/BOOT/grub.cfg-{{.Machine.HexAddress}}'
     ID: default-grub.tmpl
-  - ID: "select-kickseed.tmpl"
+  - ID: "fedora-32-iot-ks.tmpl"
     Name: "compute.ks"
     Path: "{{.Machine.Path}}/compute.ks"
