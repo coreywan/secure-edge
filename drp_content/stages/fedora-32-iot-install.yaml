@@ -1,0 +1,14 @@
+---
+Name: "fedora-32-iot-install"
+Description: "Fedora 32 Install Stage"
+BootEnv: "fedora-32-iot-install"
+Tasks:
+  - "set-hostname"
+  - "centos-drp-only-repos"
+  - "ssh-access"
+  - "configure-network"
+Meta:
+  type: "os"
+  icon: "download"
+  color: "yellow"
+  title: "Digital Rebar Community Content"

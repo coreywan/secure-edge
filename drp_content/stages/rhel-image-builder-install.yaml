@@ -1,0 +1,14 @@
+---
+Description: Invoke ansible playbooks from git
+Documentation: Invoke installation of image builder
+Meta:
+  color: yellow
+  icon: play
+  title: WWT RHEL Image Builder
+Name: rhel-image-builder-install
+Reboot: false
+RequiredParams:
+  - ansible/playbooks
+RunnerWait: true
+Tasks:
+  - rhel-image-builder-install

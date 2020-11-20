@@ -1,0 +1,20 @@
+---
+Description: A task to invoke a specific set of ansible playbooks pulled from git
+Documentation: ""
+Meta:
+  type: "config"
+  color: black
+  feature-flags: sane-exit-codes
+  icon: play
+  title: WWT RHEL Image Builder
+Name: rhel-image-builder-install
+RequiredParams:
+  - ansible/playbooks
+Templates:
+  - Name: git-ansible-playbook
+    Contents: |
+      #!/usr/bin/env bash
+      yum update -y
+      yum install -y osbuild-composer cockpit-composer composer-cli
+      systemctl enable --now cockpit.socket
+      systemctl enable --now osbuild-composer

@@ -1,0 +1,17 @@
+---
+Name: rhel-image-builder
+Description: Base installation of RHEL Image Builder to support IOT
+Documentation: |
+  Base installation of RHEL Image Builder to support IOT
+Meta:
+  color: green
+  icon: linux
+  title: WWT RHEL Image Builder
+Stages:
+  - rhel-server-8-dvd-install
+  - redhat-subscription-register
+  - centos-setup-repos
+  - runner-service
+  - finish-install
+  - rhel-image-builder-install
+  - complete

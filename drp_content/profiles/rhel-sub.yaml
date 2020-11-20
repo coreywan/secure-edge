@@ -1,0 +1,10 @@
+---
+ReadOnly: false
+Meta: {}
+Partial: false
+Name: rhel-sub
+Description: 'RHEL Subscription Details to be filled in later'
+Documentation: ''
+Params:
+  redhat/rhsm-activation-key: ""
+  redhat/rhsm-organization: ""

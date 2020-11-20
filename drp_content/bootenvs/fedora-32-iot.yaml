@@ -68,6 +68,6 @@ Templates:
   - Name: grub-secure
     Path: '{{.Env.PathFor "tftp" ""}}/EFI/BOOT/grub.cfg-{{.Machine.HexAddress}}'
     ID: default-grub.tmpl
-  - ID: "fedora-32-iot-ks.tmpl"
+  - ID: "fedora-32-iot-ks-orig.tmpl"
     Name: "compute.ks"
     Path: "{{.Machine.Path}}/compute.ks"
