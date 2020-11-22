@@ -15,6 +15,6 @@ Templates:
     Contents: |
       #!/usr/bin/env bash
       yum update -y
-      yum install -y osbuild-composer cockpit-composer composer-cli
+      yum install -y osbuild-composer cockpit-composer composer-cli bash-completion
       systemctl enable --now cockpit.socket
       systemctl enable --now osbuild-composer
