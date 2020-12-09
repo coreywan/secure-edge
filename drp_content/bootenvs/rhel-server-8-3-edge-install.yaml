@@ -113,7 +113,7 @@ Templates:
   Name: grub-secure
   Path: '{{.Env.PathFor "tftp" ""}}/EFI/BOOT/grub.cfg-{{.Machine.HexAddress}}'
 - Contents: ""
-  ID: rhel-8-3-edge-couch.ks.tmpl
+  ID: rhel-8-3-edge.ks.tmpl
   Link: ""
   Meta: {}
   Name: compute.ks
