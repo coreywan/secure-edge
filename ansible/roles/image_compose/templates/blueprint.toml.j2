@@ -1,0 +1,10 @@
+name = "{{ item.name }}"
+description = "{{ item.description | default('')}}"
+version = "{{  item.version | default('0.0.1')}}"
+
+{% for module in item.modules %}
+[[modules]]
+name = "{{module.name}}"
+version = "{{ module.version | default('*') }}"
+
+{% endfor %}
