@@ -16,7 +16,7 @@ rootpw --lock
 user --groups=wheel --name=test --iscrypted --password={{if .ParamExists "provisioner-default-password-hash"}}{{.Param "provisioner-default-password-hash"}}{{else}}$6$drprocksdrprocks$upAIK9ynEEdFmaxJ5j0QRvwmIu2ruJa1A1XB7GZjrnYYXXyNr4qF9FttxMda2j.cmh.TSiLgn4B/7z0iSHkDC1{{end}} --gecos="test"
 
 # Bootloader Setup
-bootloader --append="ima_policy=tcb lockdown=integrity intel_iommu=on" --iscrypted --password={{ .Param "bootloader/password" }}
+bootloader --append="ima_policy=tcb lockdown=integrity intel_iommu=on" --iscrypted --password={{ .Param "secure-edge/bootloader-password" }}
 
 # Disk Setup
 zerombr

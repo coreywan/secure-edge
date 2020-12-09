@@ -54,7 +54,7 @@ OptionalParams:
 - ostree/remote
 - ostree/ref
 - ostree/osname
-- bootloader/password
+- secure-edge/bootloader-password
 ReadOnly: true
 RequiredParams: []
 Templates:
