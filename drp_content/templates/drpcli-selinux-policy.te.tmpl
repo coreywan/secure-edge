@@ -1,0 +1,21 @@
+module drpclilocal 1.0;
+
+require {
+	type tmp_t;
+	type init_t;
+	type var_t;
+	type unreserved_port_t;
+	class file { execute execute_no_trans map open read };
+	class tcp_socket name_connect;
+	class sock_file { create write };
+}
+
+#============= init_t ==============
+allow init_t tmp_t:sock_file { create write };
+
+#!!!! This avc can be allowed using the boolean 'nis_enabled'
+allow init_t unreserved_port_t:tcp_socket name_connect;
+
+#!!!! This avc can be allowed using the boolean 'domain_can_mmap_files'
+allow init_t var_t:file map;
+allow init_t var_t:file { execute execute_no_trans open read };
