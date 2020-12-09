@@ -52,8 +52,8 @@ OptionalParams:
 - redhat/subscription-skip-activation
 - redhat/subscription-username
 - secure-edge/ostree-remote
-- ostree/ref
-- ostree/osname
+- secure-edge/ostree-ref
+- secure-edge/ostree-osname
 - secure-edge/bootloader-password
 ReadOnly: true
 RequiredParams: []
