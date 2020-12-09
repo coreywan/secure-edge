@@ -46,7 +46,7 @@ pwpolicy luks --minlen=6 --minquality=1 --notstrict --nochanges --notempty
 
 # Post Installs begin here
 
-{{ if .Param "tpm/enable" }}
+{{ if .Param "secure-edge/tpm-enable" }}
 # TPM Provisioning
 %post --erroronfail --log=/root/tpm-provisioning.log
 set -euxo pipefail
@@ -68,7 +68,7 @@ tpm2_checkquote -u ak.pem -m quote.message -s quote.signature \
 %end
 {{ end -}}
 
-{{ if .Param "tpm/enable" }}
+{{ if .Param "secure-edge/tpm-enable" }}
 # Disk Encryption Configuration
 %post --erroronfail --log=/root/disk-encryption-configuration.log
 set -euxo pipefail
