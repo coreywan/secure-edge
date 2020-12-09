@@ -1,0 +1,10 @@
+Available: true
+Description:  Whether or not to enable TPM
+Documentation: ""
+Name: tpm/enable
+ReadOnly: true
+Schema:
+  type: boolean
+  default: false
+Secure: false
+Validated: true
