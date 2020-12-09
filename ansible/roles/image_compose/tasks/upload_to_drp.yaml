@@ -1,0 +1,21 @@
+- name: Upload a file via multipart/form-multipart
+  uri:
+    url: "https://{{ drp_srv }}:8092/api/v3/files/os_tree/{{ commit_id }}-commit.tar"
+    method: POST
+    body_format: json
+    remote_src: true
+    user: "{{ drp_user }}"
+    password: "{{ drp_pass }}"
+    force_basic_auth: true
+    validate_certs: false
+    src: "{{ ostree_builder_tmp_dir }}/{{commit_id}}-commit.tar"
+    status_code: 201
+    headers:
+      Content-Type: application/octet-stream
+
+- name: untar file
+  delegate_to: drp
+  shell: |
+    tar xvf {{commit_id}}-commit.tar
+  args:
+    chdir: /var/lib/dr-provision/tftpboot/files/os_tree/

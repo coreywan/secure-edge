@@ -1,0 +1,38 @@
+- name: Template blueprint
+  template:
+    dest: "{{ ostree_builder_tmp_dir }}/{{ item.name }}.toml"
+    src: blueprint.toml.j2
+
+- name: Push Blueprint
+  shell: |
+    composer-cli blueprints push "{{ ostree_builder_tmp_dir }}/{{ item.name }}.toml"
+
+- name: Compose ostree start
+  shell: |
+    composer-cli compose start-ostree "{{ item.name }}" rhel-edge-commit
+  register: compose_ostree_start_raw
+
+- set_fact:
+    commit_id: "{{ compose_ostree_start_raw.stdout.split()[1] }}"
+
+- name: Get Status
+  shell: |
+    composer-cli compose status | grep {{ commit_id }}
+  register: compose_ostree_status_raw
+  until: '"FINISHED" in compose_ostree_status_raw.stdout'
+  delay: 30
+  retries: 40
+  changed_when: false
+
+- name: Compose the Image
+  shell: |
+    cd {{ ostree_builder_tmp_dir }}
+    composer-cli compose image {{ commit_id }}
+  args:
+    creates: "{{ ostree_builder_tmp_dir }}/{{ commit_id }}-commit.tar"
+
+- name: Create Fact for file location
+  set_fact:
+    image_location: "{{ ostree_builder_tmp_dir }}/{{ commit_id }}-commit.tar"
+
+- include_tasks: upload_to_drp.yaml
