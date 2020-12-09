@@ -3,9 +3,7 @@ Name: rhel-server-8-3-edge-install
 BootEnv: rhel-server-8-3-edge-install
 Description: RHEL Server 8 install stages.  Using boot (minimal) ISO.
 Documentation: |
-  Uses the RHEL 8 server boot ISO (minimal) to install.  Enables installation from local
-  ISO as the repo source.
-  Note that ``centos-drp-only-repos`` is valid with Redhat systems.
+  Uses the RHEL 8 server boot ISO (minimal) to install ostree image
 Meta:
   color: blue
   icon: download
@@ -19,7 +17,6 @@ RequiredParams: []
 RunnerWait: true
 Tasks:
   - set-hostname
-  - centos-drp-only-repos
   - ssh-access
   - configure-network
 Templates: []
