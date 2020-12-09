@@ -51,6 +51,10 @@ OptionalParams:
 - redhat/subscription-repos
 - redhat/subscription-skip-activation
 - redhat/subscription-username
+- ostree/remote
+- ostree/ref
+- ostree/osname
+- bootloader/password
 ReadOnly: true
 RequiredParams: []
 Templates:
@@ -109,7 +113,7 @@ Templates:
   Name: grub-secure
   Path: '{{.Env.PathFor "tftp" ""}}/EFI/BOOT/grub.cfg-{{.Machine.HexAddress}}'
 - Contents: ""
-  ID: rhel-8-3-edge.ks.tmpl
+  ID: rhel-8-3-edge-couch.ks.tmpl
   Link: ""
   Meta: {}
   Name: compute.ks
