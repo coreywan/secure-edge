@@ -1,4 +1,4 @@
-ostreesetup --nogpg --url=http://{{ .ProvisionerAddress }}:8091/files/os_tree/repo/ --osname={{.Param "ostree/osname"}} --remote={{.Param "ostree/remote"}} --ref={{.Param "ostree/ref"}}
+ostreesetup --nogpg --url=http://{{ .ProvisionerAddress }}:8091/files/os_tree/repo/ --osname={{.Param "ostree/osname"}} --remote={{.Param "secure-edge/ostree-remote"}} --ref={{.Param "ostree/ref"}}
 text
 keyboard us
 lang en_US.UTF-8
