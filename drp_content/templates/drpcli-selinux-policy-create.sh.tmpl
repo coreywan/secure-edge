@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+set -e
+
+tee /tmp/drpclilocal.te >/dev/null << EOF
+{{ template "drpcli-selinux-policy.te.tmpl" . }}
+EOF
+
+# Convert Type Enforcement File to policy module
+checkmodule -M -m -o /tmp/drpclilocal.mod /tmp/drpclilocal.te
+
+# Compile the policy module into a policy package
+semodule_package -o /tmp/drpclilocal.pp -m /tmp/drpclilocal.mod
+
+# Install the Policy Package
+semodule -i /tmp/drpclilocal.pp

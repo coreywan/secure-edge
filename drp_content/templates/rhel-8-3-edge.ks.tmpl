@@ -1,0 +1,213 @@
+ostreesetup --nogpg --url=http://{{ .ProvisionerAddress }}:8091/files/os_tree/repo/ --osname={{.Param "secure-edge/ostree-osname"}} --remote={{.Param "secure-edge/ostree-remote"}} --ref={{.Param "secure-edge/ostree-ref"}}
+text
+keyboard us
+lang en_US.UTF-8
+timezone Etc/UTC --isUtc
+firewall --use-system-defaults
+network --hostname={{ if .ParamExists "hostname" }}{{ .Param "hostname" }}{{ else }}{{ .Machine.ShortName }}{{ end }}
+services --enabled=ostree-remount,cockpit.socket,usbguard --disabled=kdump.service
+services --enabled=ostree-remount,usbguard --disabled=kdump.service
+reboot {{if .Param "kexec-ok" }}--kexec{{end}}
+
+selinux --{{.Param "secure-edge/selinux-status" }}
+
+# User Setup
+rootpw --lock
+user --groups=wheel --name=test --iscrypted --password={{if .ParamExists "provisioner-default-password-hash"}}{{.Param "provisioner-default-password-hash"}}{{else}}$6$drprocksdrprocks$upAIK9ynEEdFmaxJ5j0QRvwmIu2ruJa1A1XB7GZjrnYYXXyNr4qF9FttxMda2j.cmh.TSiLgn4B/7z0iSHkDC1{{end}} --gecos="test"
+
+# Bootloader Setup
+bootloader --append="ima_policy=tcb lockdown=integrity intel_iommu=on" --iscrypted --password={{ .Param "secure-edge/bootloader-password" }}
+
+# Disk Setup
+zerombr
+ignoredisk --only-use={{.Param "operating-system-disk"}}
+clearpart --drives={{.Param "operating-system-disk"}} --all --initlabel
+
+part /boot --fstype=ext4 --size=512 --ondisk={{.Param "operating-system-disk"}}
+part /boot/efi --fstype=efi --grow --maxsize=200 --size=20 --ondisk={{.Param "operating-system-disk"}}
+part swap --recommended
+part pv.1 --size 1 --grow --fstype=ext4 --ondisk={{.Param "operating-system-disk"}}
+
+volgroup system --pesize=32768 pv.1
+logvol / --fstype ext4 --vgname=system --percent=20 --name=root
+logvol swap --vgname=system --percent=5 --name=swap
+logvol /var/home --fstype ext4 --vgname=system --percent=5 --name=home
+
+# Addon Setup
+%addon com_redhat_kdump --disable --reserve-mb='128'
+%end
+
+# Password Policy
+%anaconda
+pwpolicy root --minlen=6 --minquality=1 --notstrict --nochanges --notempty
+pwpolicy user --minlen=6 --minquality=1 --notstrict --nochanges --emptyok
+pwpolicy luks --minlen=6 --minquality=1 --notstrict --nochanges --notempty
+%end
+
+# Post Installs begin here
+
+{{ if .Param "secure-edge/tpm-enable" }}
+# TPM Provisioning
+%post --erroronfail --log=/root/tpm-provisioning.log
+set -euxo pipefail
+
+tpm2_clear
+mkdir -p /etc/tpm2
+cd /etc/tpm2
+tpm2_createek -c 0x81010001 -G rsa -u ek.pub
+tpm2_createak -C 0x81010001 -c ak.ctx -G rsa -g sha256 -s rsassa
+tpm2_evictcontrol -C o -c ak.ctx 0x81010002
+tpm2_readpublic -c ak.ctx -f pem -o ak.pem > ak.yaml
+cat ak.yaml | grep '^name:' | awk '{ print $2 }' > ak.name
+
+tpm2_quote -c 0x81010002 -l sha256:0,1,2,3,4,5,6,7,8,9,10 \
+        -m quote.message -s quote.signature -o quote.pcrs -g sha256
+
+tpm2_checkquote -u ak.pem -m quote.message -s quote.signature \
+        -f quote.pcrs -g sha256
+%end
+{{ end -}}
+
+{{ if .Param "secure-edge/tpm-enable" }}
+# Disk Encryption Configuration
+%post --erroronfail --log=/root/disk-encryption-configuration.log
+set -euxo pipefail
+echo "system-swap /dev/system/swap /dev/urandom swap,cipher=aes-xts-plain64,size=256" >> /etc/crypttab
+
+lvcreate -y -l 20%VG -n opt system
+printf "{{.Param "secure-edge/luks-password" }}" | cryptsetup -q luksFormat /dev/system/opt -d -
+printf "{{.Param "secure-edge/luks-password" }}" | clevis luks bind -f -k- -d /dev/system/opt tpm2 '{}'
+printf "{{.Param "secure-edge/luks-password" }}" | cryptsetup luksOpen /dev/system/opt c1 -d -
+mkfs.ext4 /dev/mapper/c1
+sleep 1
+cryptsetup luksClose c1
+echo "luks-system-opt /dev/system/opt none" >> /etc/crypttab
+echo "/dev/mapper/luks-system-opt /var/opt ext4 defaults  0 2" >> /etc/fstab
+systemctl enable clevis-luks-askpass@$(cryptsetup luksUUID /dev/system/opt).path
+
+lvcreate -y -l 25%VG -n containers system
+printf "{{.Param "secure-edge/luks-password" }}" | cryptsetup -q luksFormat /dev/system/containers -d -
+printf "{{.Param "secure-edge/luks-password" }}" | clevis luks bind -f -k- -d /dev/system/containers tpm2 '{}'
+printf "{{.Param "secure-edge/luks-password" }}" | cryptsetup luksOpen /dev/system/containers c2 -d -
+mkfs.ext4 /dev/mapper/c2
+mkdir -p /var/lib/containers/
+mount /dev/mapper/c2 /var/lib/containers/
+mkdir -p /var/lib/containers/storage/
+restorecon -vR /var/lib/containers/
+umount /var/lib/containers/
+sleep 1
+cryptsetup luksClose c2
+echo "luks-system-containers /dev/system/containers none" >> /etc/crypttab
+echo "/dev/mapper/luks-system-containers /var/lib/containers ext4 defaults  0 2" >> /etc/fstab
+systemctl enable clevis-luks-askpass@$(cryptsetup luksUUID /dev/system/containers).path
+
+lvcreate -y -l 25%VG -n user-containers system
+printf "{{.Param "secure-edge/luks-password" }}" | cryptsetup -q luksFormat /dev/system/user-containers -d -
+printf "{{.Param "secure-edge/luks-password" }}" | clevis luks bind -f -k- -d /dev/system/user-containers tpm2 '{}'
+printf "{{.Param "secure-edge/luks-password" }}" | cryptsetup luksOpen /dev/system/user-containers c3 -d -
+mkfs.ext4 /dev/mapper/c3
+mkdir -p /var/home/test/.local/share/containers/
+mount /dev/mapper/c3 /var/home/test/.local/share/containers/
+mkdir -p /var/home/test/.local/share/containers/storage/
+chown test:test -R /var/home/test/.local/share/containers/
+restorecon -vR /var/home/test/.local/share/containers/
+umount /var/home/test/.local/share/containers/
+sleep 1
+cryptsetup luksClose c3
+echo "luks-system-user-containers /dev/system/user-containers none" >> /etc/crypttab
+echo "/dev/mapper/luks-system-user-containers /var/home/test/.local/share/containers/ ext4 defaults  0 2" >> /etc/fstab
+systemctl enable clevis-luks-askpass@$(cryptsetup luksUUID /dev/system/user-containers).path
+
+%end
+{{ end -}}
+
+# USBGuard Setup
+%post --erroronfail --log=/root/usbguard-setup.log
+set -euxo pipefail
+
+usbguard generate-policy > /etc/usbguard/rules.conf
+restorecon -v /etc/usbguard/rules.conf
+
+%end
+
+
+{{ if .Param "secure-edge/ima-enable" }}
+# IMA Custom Policy Setup
+%post --erroronfail --log=/root/ima-custom-policy-setup.log
+set -euxo pipefail
+
+mkdir -p /etc/ima
+touch /etc/ima/ima-policy
+
+cat >> /etc/ima/ima-policy << EOF
+dont_measure fsmagic=0x9fa0
+dont_measure fsmagic=0x62656572
+dont_measure fsmagic=0x64626720
+dont_measure fsmagic=0x1021994
+dont_measure fsmagic=0x1cd1
+dont_measure fsmagic=0x42494e4d
+dont_measure fsmagic=0x73636673
+dont_measure fsmagic=0xf97cff8c
+dont_measure fsmagic=0x43415d53
+dont_measure fsmagic=0x27e0eb
+dont_measure fsmagic=0x63677270
+dont_measure fsmagic=0x6e736673
+EOF
+
+cat >> /etc/ima/ima-policy << EOF
+dont_measure obj_type=container_share_t
+dont_measure obj_type=container_var_lib_t
+dont_measure obj_type=container_file_t
+EOF
+
+cat >> /etc/ima/ima-policy << EOF
+measure func=MMAP_CHECK mask=MAY_EXEC
+measure func=BPRM_CHECK mask=MAY_EXEC
+measure func=FILE_CHECK euid=0 mask=MAY_EXEC
+measure func=FILE_CHECK uid=0 mask=MAY_EXEC
+measure func=MODULE_CHECK
+measure func=FIRMWARE_CHECK
+measure func=POLICY_CHECK
+EOF
+
+cat /etc/selinux/targeted/contexts/files/file_contexts | grep [A-Za-z0-9_]*unit_file_t --only-matching | sort | uniq | while read CONTEXT; do
+    echo "measure obj_type=${CONTEXT}" >> /etc/ima/ima-policy
+done
+
+cat /etc/selinux/targeted/contexts/files/file_contexts | grep [A-Za-z0-9_]*config_t --only-matching | sort | uniq | while read CONTEXT; do
+    echo "measure obj_type=${CONTEXT}" >> /etc/ima/ima-policy
+done
+
+cat /etc/selinux/targeted/contexts/files/file_contexts | grep [A-Za-z0-9_]*conf_t --only-matching | sort | uniq | while read CONTEXT; do
+    echo "measure obj_type=${CONTEXT}" >> /etc/ima/ima-policy
+done
+
+cat /etc/selinux/targeted/contexts/files/file_contexts | grep [A-Za-z0-9_]*cert_t --only-matching | sort | uniq | while read CONTEXT; do
+    echo "measure obj_type=${CONTEXT}" >> /etc/ima/ima-policy
+done
+
+cat /etc/selinux/targeted/contexts/files/file_contexts | grep [A-Za-z0-9_]*key_t --only-matching | sort | uniq | while read CONTEXT; do
+    echo "measure obj_type=${CONTEXT}" >> /etc/ima/ima-policy
+done
+
+cat /etc/selinux/targeted/contexts/files/file_contexts | grep [A-Za-z0-9_]*secret_t --only-matching | sort | uniq | while read CONTEXT; do
+    echo "measure obj_type=${CONTEXT}" >> /etc/ima/ima-policy
+done
+%end
+{{ end -}}
+
+# Post Install Scripts
+%post --erroronfail --log=/root/kickstart-phase-1.log
+set -euxo pipefail
+echo "test ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+curl -o /usr/local/bin/podman-compose https://raw.githubusercontent.com/containers/podman-compose/devel/podman_compose.py
+chmod +x /usr/local/bin/podman-compose
+echo "alias docker-compose=podman-compose" >> /home/test/.bashrc
+touch /etc/containers/nodocker
+%end
+
+%post --erroronfail --log=/root/drpcli-setup.log
+{{template "drpcli-selinux-policy-create.sh.tmpl" .}}
+{{template "reset-workflow.tmpl" .}}
+{{template "runner.tmpl" .}}
+%end

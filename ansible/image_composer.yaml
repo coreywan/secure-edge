@@ -1,0 +1,43 @@
+- hosts: image_builder
+  gather_facts: false
+  become: true
+  vars:
+    ostree_builder_images:
+      - name: Secure-Edge
+        description: WWT Generic Secure Image
+        version: 0.0.2
+        modules:
+          - name: strace
+            version: "*"
+          - name: bzip2
+            version: "*"
+          - name: cockpit
+            version: "*"
+          - name: cockpit-doc
+            version: "*"
+          - name: cockpit-storaged
+            version: "*"
+          - name: cockpit-pcp
+            version: "*"
+          - name: cockpit-podman
+            version: "*"
+          - name: cockpit-system
+            version: "*"
+          - name: git
+            version: "*"
+          - name: nano
+            version: "*"
+          - name: podman-docker
+            version: "*"
+          - name: python38
+            version: "*"
+          - name: python38-pyyaml
+            version: "*"
+          - name: tmux
+            version: "*"
+          - name: tuned
+            version: "*"
+          - name: unzip
+            version: "*"
+  roles:
+    - image_compose

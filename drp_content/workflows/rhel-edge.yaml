@@ -1,0 +1,14 @@
+---
+Name: rhel-edge
+Description: Base installation of RHEL Edge
+Documentation: |
+  Base installation of RHEL Image Builder to support IOT
+Meta:
+  color: green
+  icon: linux
+  title: WWT RHEL Image Builder
+Stages:
+  - rhel-server-8-3-edge-install
+  - runner-service
+  - finish-install
+  - complete

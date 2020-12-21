@@ -1,0 +1,121 @@
+Available: true
+BootParams: ""
+Description: Install BootEnv for RedHat 8.3 - boot (minimal) ISO
+Documentation: |
+  This BootEnv installs the RHEL Server 8.3 operating system from the boot (minimal) ISO.
+Loaders:
+  amd64-uefi: EFI/BOOT/BOOTX64.EFI
+Meta:
+  color: red
+  feature-flags: change-stage-v2
+  icon: linux
+  title: Digital Rebar Community Content
+Name: rhel-server-8-3-edge-install
+OS:
+  Codename: ""
+  Family: redhat
+  IsoFile: ""
+  IsoSha256: ""
+  IsoUrl: ""
+  Name: rhel-server-8-3-boot
+  SupportedArchitectures:
+    x86_64:
+      BootParams: ksdevice=bootif ks={{.Machine.Url}}/compute.ks method={{.Env.InstallUrl}}
+        inst.geoloc=0 {{.Param "kernel-options"}} -- {{.Param "kernel-console"}}
+      Initrds:
+      - images/pxeboot/initrd.img
+      IsoFile: rhel-8.3-x86_64-boot.iso
+      IsoUrl: ""
+      Kernel: images/pxeboot/vmlinuz
+      Loader: ""
+      Sha256: 1b73ebfebd1f9424c806032168873b067259d8b29f4e9d39ae0e4009cce49b93
+  Version: "8"
+OnlyUnknown: false
+OptionalParams:
+- kernel-console
+- kernel-options
+- ntp-servers
+- operating-system-disk
+- proxy-servers
+- provisioner-default-password-hash
+- provisioner-default-username
+- provisioner-access-key
+- provisioner-network-config
+- redhat/kickstart-shell
+- redhat/rhsm-activation-key
+- redhat/rhsm-additional
+- redhat/rhsm-organization
+- redhat/subscription-gpg-keys
+- redhat/subscription-password
+- redhat/subscription-repos
+- redhat/subscription-repos
+- redhat/subscription-skip-activation
+- redhat/subscription-username
+- secure-edge/ostree-remote
+- secure-edge/ostree-ref
+- secure-edge/ostree-osname
+- secure-edge/bootloader-password
+ReadOnly: true
+RequiredParams: []
+Templates:
+- Contents: ""
+  ID: kexec.tmpl
+  Link: ""
+  Meta: {}
+  Name: kexec
+  Path: '{{.Machine.Path}}/kexec'
+- Contents: ""
+  ID: default-pxelinux.tmpl
+  Link: ""
+  Meta: {}
+  Name: pxelinux
+  Path: pxelinux.cfg/{{.Machine.HexAddress}}
+- Contents: ""
+  ID: default-ipxe.tmpl
+  Link: ""
+  Meta: {}
+  Name: ipxe
+  Path: '{{.Machine.Address}}.ipxe'
+- Contents: ""
+  ID: default-pxelinux.tmpl
+  Link: ""
+  Meta: {}
+  Name: pxelinux-mac
+  Path: pxelinux.cfg/{{.Machine.MacAddr "pxelinux"}}
+- Contents: ""
+  ID: default-ipxe.tmpl
+  Link: ""
+  Meta: {}
+  Name: ipxe-mac
+  Path: '{{.Machine.MacAddr "ipxe"}}.ipxe'
+- Contents: ""
+  ID: default-grub.tmpl
+  Link: ""
+  Meta: {}
+  Name: grub
+  Path: grub/{{.Machine.Address}}.cfg
+- Contents: ""
+  ID: default-grub.tmpl
+  Link: ""
+  Meta: {}
+  Name: grub-mac
+  Path: grub/{{.Machine.MacAddr "grub"}}.cfg
+- Contents: ""
+  ID: default-grub.tmpl
+  Link: ""
+  Meta: {}
+  Name: grub-secure-mac
+  Path: '{{.Env.PathFor "tftp" ""}}/EFI/BOOT/grub.cfg-{{.Machine.MacAddr "pxelinux"}}'
+- Contents: ""
+  ID: default-grub.tmpl
+  Link: ""
+  Meta: {}
+  Name: grub-secure
+  Path: '{{.Env.PathFor "tftp" ""}}/EFI/BOOT/grub.cfg-{{.Machine.HexAddress}}'
+- Contents: ""
+  ID: rhel-8-3-edge.ks.tmpl
+  Link: ""
+  Meta: {}
+  Name: compute.ks
+  Path: '{{.Machine.Path}}/compute.ks'
+Validated: true

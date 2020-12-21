@@ -1,0 +1,22 @@
+all:
+  vars:
+    wwt_standard_pass: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          35356562666133366363643962656133646232646332343537373130663138623237383439626338
+          6565663332643366623638383533303938376239303831380a346265366235373166643432333030
+          35623532653233653366346639643265396633313663656531326262333333336466643532333832
+          6538646531646466310a636530373234323130393636313131356634636362663732386633356165
+          3939
+    drp_user: rocketskates
+    drp_pass: "{{ wwt_standard_pass }}"
+    drp_srv: 10.254.163.6
+  hosts:
+    fitlet:
+    image_builder:
+      ansible_host: 10.254.163.52
+      ansible_user: root
+      ansible_password: "{{ wwt_standard_pass }}"
+    drp:
+      ansible_host: 10.254.163.6
+      ansible_user: root
+      ansible_password: "{{ wwt_standard_pass }}"

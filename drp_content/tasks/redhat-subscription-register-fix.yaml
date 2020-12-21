@@ -1,0 +1,24 @@
+---
+Validated: true
+Available: true
+Errors: []
+ReadOnly: true
+Meta:
+  color: blue
+  feature-flags: sane-exit-codes
+  icon: key
+  title: Digital Rebar Community Content
+Name: redhat-subscription-register-fix
+Description: A task to register this Machine for Redhat Subscription Network and repos
+Documentation: |
+  A task to register this Machine for Redhat Subscription Network and repos
+Templates:
+  - Name: Redhat Subscription Network Register
+    Path: ''
+    Link: ''
+    ID: redhat-subscription-register-fix.sh.tmpl
+    Contents: ''
+    Meta: {}
+RequiredParams: []
+OptionalParams: []
+Prerequisites: []

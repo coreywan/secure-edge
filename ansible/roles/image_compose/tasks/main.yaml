@@ -1,0 +1,3 @@
+- name: loop over ostree_builder_images
+  include_tasks: blueprint_create.yaml
+  loop: "{{ ostree_builder_images }}"

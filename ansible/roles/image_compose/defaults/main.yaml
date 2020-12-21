@@ -1,0 +1,5 @@
+---
+ostree_builder_images: []
+ostree_builder_tmp_dir: "/tmp"
+ostree_untar: false
+ostree_upload: false
