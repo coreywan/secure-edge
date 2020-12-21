@@ -18,3 +18,5 @@ Templates:
       yum install -y osbuild-composer cockpit-composer composer-cli bash-completion
       systemctl enable --now cockpit.socket
       systemctl enable --now osbuild-composer
+      yum install -y git python38 python38-pip
+      pip3 install ansible
