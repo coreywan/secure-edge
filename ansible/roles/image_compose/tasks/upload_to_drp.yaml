@@ -1,4 +1,5 @@
 - name: Upload a file via multipart/form-multipart
+  when: ostree_upload
   uri:
     url: "https://{{ drp_srv }}:8092/api/v3/files/os_tree/{{ commit_id }}-commit.tar"
     method: POST
@@ -15,6 +16,7 @@
 
 - name: untar file
   delegate_to: drp
+  when: ostree_untar
   shell: |
     tar xvf {{commit_id}}-commit.tar
   args:
