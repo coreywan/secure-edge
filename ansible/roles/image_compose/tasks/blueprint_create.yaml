@@ -35,4 +35,8 @@
   set_fact:
     image_location: "{{ ostree_builder_tmp_dir }}/{{ commit_id }}-commit.tar"
 
+- name: Output the Image Location
+  debug:
+    msg: "Image Location: {{ image_location }}"
+
 - include_tasks: upload_to_drp.yaml
