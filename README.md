@@ -199,7 +199,6 @@ Now that we got the pre-req's out of the way, let's deploy Red Hat Edge:
 
 ```sh
 MACHINENAME=iot
-MACHINENAME=d24-6e-96-dd-7f-16.atclab.local
 drpcli machines addprofile Name:$MACHINENAME secure-edge
 drpcli machines addprofile Name:$MACHINENAME wwt-root
 drpcli machines workflow Name:$MACHINENAME "" && drpcli machines workflow Name:$MACHINENAME "rhel-edge"
