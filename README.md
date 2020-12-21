@@ -114,7 +114,7 @@ echo "$IMAGESHA  $IMAGEFILENAME" | sha256sum --check
     rhel-8.3-x86_64-boot.iso: OK
     ```
 
-9. Upload the iso using the following command. This will force the iso to expand in the TFTP folder. We will check that next:
+9. Upload the iso into DRP using the following command. This will force the iso to expand in the TFTP folder. We will check that next:
 
 ```
 drpcli isos upload /tmp/rhel-8.3-x86_64-boot.iso
