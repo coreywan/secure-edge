@@ -1,6 +1,6 @@
 # Secure Edge Repository
 
-DISCLAIMER: This is a solution that is evolving very quickly. Components will be changed/adapted frequently as the Red Hat Edge product evolves.
+**DISCLAIMER**: This is a solution that is evolving very quickly. Components will be changed/adapted frequently as the Red Hat Edge product evolves.
 
 The purpose of this repository is to illustrate how to automatically deploy Red Hat Edge into secured IOT device such as HP Edge Line and Compulab Finlet devices.
 
