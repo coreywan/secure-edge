@@ -11,7 +11,7 @@ At a high level, this will walk through the process of a basic installation of D
 1. Install DRP
 
 ```sh
-apt-get install -y curl jq
+apt-get install -y curl jq ipmitool
 curl -fsSL get.rebar.digital/stable | bash -s -- --drp-id='{{unique-name-for-your-instance}}' --start-runner install
 systemctl daemon-reload 
 systemctl enable dr-provision
@@ -33,6 +33,9 @@ drpcli bootenvs uploadiso sledgehammer
 drpcli bootenvs uploadiso rhel-server-8-dvd-install
 drpcli prefs set defaultWorkflow discover-base unknownBootEnv discovery
 drpcli contents upload catalog:task-library-stable
+drpcli contents upload catalog:drp-community-contrib-stable
+drpcli contents upload catalog:os-other-stable
+drpcli catalog item install ipmi
 drpcli bootenvs uploadiso centos-8-install
 
 echo '{
@@ -214,3 +217,7 @@ drpcli machines workflow Name:$MACHINENAME "" && drpcli machines workflow Name:$
 * Symptom: I can't get secure-boot to work, but non-secure boot works. 
   * Look for a license error in journalctl.  This is an indicator that your DRP instance isn't using a license that has the entitlement for secure-bootloaders. Reach out to the RackN team to get a trial license for that feature.
     * `journalctl -u dr-provision.service | grep secure-bootloaders`
+
+* Symptom: My HPE EL Server doesn't display console after it boots into Red Hat Edge
+  * Workaround documented [here](https://support.hpe.com/hpesc/public/docDisplay?docId=a00074529en_us&docLocale=en_US)
+  * The workaround maps to setting the `kernel-options` parameter to `nomodeset`
